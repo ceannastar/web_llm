@@ -118,18 +118,6 @@
         </div>
         <div style="width: 100%; height: 92%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
           <div ref="messages" class="messages" style="overflow-y: scroll;">
-              <div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; margin-top: 10px;">
-                <div style="max-width: 60%; height: fit-content; border-radius: 2vh; background-color: rgba(35, 46, 46, 0.05); padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">
-                  <p style="font-size: 100%; font-family: 'Archivo', sans-serif;">Jingga, Hello!</p>
-                </div>
-              </div>
-              <div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; margin-top: 10px;">
-                <div style="max-width: 100%; height: fit-content; border-radius: 2vh; padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">
-                  <p style="font-size: 100%; font-family: 'Archivo', sans-serif;">Hello, Joshua!</p>
-                  <p style="font-size: 100%; font-family: 'Archivo', sans-serif;">How can I help you?</p>
-                  <p style="font-size: 100%; font-family: 'Archivo', sans-serif;">Quantum physics is the fundamental theory describing the nature of matter and energy at the atomic and subatomic level, where the familiar rules of classical physics break down. It reveals a bizarre reality where particles can exist in multiple places at once (superposition), become instantaneously linked regardless of distance (entanglement), and act as both waves and particles simultaneously, dictating how everything from light bulbs to lasers, and even our own bodies, ultimately function.</p>
-                </div>
-              </div>
           </div>
           <div class="message-input">
             <div style="width: 98%; height: 80%; border-radius: 1vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: white; margin-top: 1vh">
@@ -174,7 +162,7 @@
 }
 .main-container
 {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   background-color: #354445;
   display: flex;
@@ -429,25 +417,30 @@
     },
     mounted()
     {
-      var alice_messages = [];
-      var bob_messages = [];
-      alice_messages.push("Hello!", "I'm fine! What about you?", "Glad to hear it","Hello!", "I'm fine! What about you?", "Glad to hear it","Hello!", "I'm fine! What about you?", "Glad to hear it");
-      bob_messages.push("Hello! How are you?", "Excellent. Just buy a journey ticket to travel Berlin.", "Thanks","Hello!", "I'm fine! What about you?", "Glad to hear it","Hello!", "I'm fine! What about you?", "Glad to hear it","Hello!", "I'm fine! What about you?", "Glad to hear it");
-      if(alice_messages.length != 0 && this.$refs.messages)
-      {
-        for(let i = 0; i < alice_messages.length; i++)
-        {
-          this.$refs.messages.innerHTML += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; margin-top: 10px;">` +
-          '<div style="max-width: 60%; height: fit-content; border-radius: 2vh; background-color: rgba(35, 46, 46, 0.05); padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">' + "<p>" + alice_messages[i] + "</p>" + "</div>" +
-          "</div>";
-        }        
-        for(let i = 0; i < bob_messages.length; i++)
-        {
-          this.$refs.messages.innerHTML += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; margin-top: 10px;">` +
-          '<div style="max-width: 100%; height: fit-content; border-radius: 2vh; padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">' + "<p>" + bob_messages[i] + "</p>" + "</div>" +
-          "</div>";
-        }
-      }
+      fetch('http://localhost:8080/chat/9476-affbcd-479426-fbf').then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+          return response.json()
+        }).then(
+          (data)=> {
+            for(let i = 0; i < Object.keys(data[0]).length; i++)
+            {
+              const temp = data[0]["id"+i];
+              if(temp["type"] == "user")
+              {
+                this.$refs.messages.innerHTML += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; margin-top: 10px;">` +
+                '<div style="max-width: 60%; height: fit-content; border-radius: 2vh; background-color: rgba(35, 46, 46, 0.05); padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">' + "<p>" + temp["text"] + "</p>" + "</div>" +
+                "</div>";
+              }
+              if(temp["type"] == "bot")
+              {
+                 this.$refs.messages.innerHTML += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; margin-top: 10px;">` +
+            '<div style="max-width: 100%; height: fit-content; border-radius: 2vh; padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">' + "<p>" + temp["text"]  + "</p>" + "</div>" +
+            "</div>";
+              }
+            }
+          }).catch((error) => console.log('Fetching data', error))
     },
     methods:
     {

@@ -1,0 +1,14 @@
+[
+    {
+        "id0":
+        {
+            "type": "user",
+            "text": "Jingga, Hello!"
+        },
+        "id1":
+        {
+            "type": "bot",
+            "text": "<p>Hello, Joshua!</p> <p>How can I Help you?</p>"
+        }
+    }
+]
