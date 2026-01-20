@@ -75,11 +75,11 @@
             </div>
             <div style="width: 85%; height: 30%; margin: 0">
                 <div style="width: 100%; height: 10%;">
-                    <p style="font-size: 20px; color: #89A7A6; font-family: 'Archivo', sans-serif;">Treads</p>
+                    <p style="font-size: 20px; color: #89A7A6; font-family: 'Archivo', sans-serif;">Threads</p>
                 </div>
                 <div style="width: 100%; height: 100%; margin-top: 10px;">
-                  <div style="width: 100%; height: 40px; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; gap: 10px; padding-left: 10px;" class="button">
-                    <p style="color: white; font-family: 'Archivo', sans-serif; margin-left: 10px;">How to fix...</p>
+                  <div style="width: 100%; height: 40px; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; gap: 10px;" class="button">
+                    <p style="color: white; font-family: 'Archivo', sans-serif;">How to fix...</p>
                   </div>
                 </div>
             </div>
@@ -120,16 +120,18 @@
           <div ref="messages" class="messages" style="overflow-y: scroll;">
           </div>
           <div class="message-input">
-            <div style="width: 98%; height: 80%; border-radius: 1vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: white; margin-top: 1vh">
-                <div style="width: 100%; height: 60%; padding-left: 30px;" class="not-selected">
-                  <p style="font-size: 17px; font-family: 'Archivo', sans-serif; color: rgba(35, 46, 46, 0.5)">Processing...</p>
+            <div style="width: 98%; height: 80%; border-radius: 1vh; display: flex; flex-direction: column; border: 3px solid rgba(35, 46, 46, 0.1); justify-content: center; align-items: center; background-color: white; margin-top: 1vh">
+                <div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: center;" class="not-selected;">
+                  <textarea ref="refInputField" v-model="inputField" @keydown.enter.prevent="requestAnswer()" @input="inputProcessing()" autocomplete="off" style="resize: none; width: 95%; height: 100%; font-size: 20px; font-family: 'Archivo', sans-serif; border: none; outline: none; margin-top: 20px;" placeholder="Ask anything">
+
+                  </textarea>
                 </div>
                 <div style="width: 100%; height: 40%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end;">
-                  <div style="width: 6vh; height: 6vh; border-radius: 10px; background-color: #FF7132; margin-right: 10px; display: flex; justify-content: center; align-items: center; opacity: 0.7">
-                    <div v-if="true" class="circle">
+                  <div id="enterButton" v-on:click="requestAnswer()" style="width: 6vh; height: 6vh; border-radius: 10px; background-color: #FF7132; margin-right: 10px; display: flex; justify-content: center; align-items: center; opacity: 0.5;">
+                    <div v-if="isResponding" class="circle">
 
                     </div>
-                    <div v-if="false">
+                    <div v-if="!isResponding">
                       <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3C12.2652 3 12.5196 3.10536 12.7071 3.29289L19.7071 10.2929C20.0976 10.6834 20.0976 11.3166 19.7071 11.7071C19.3166 12.0976 18.6834 12.0976 18.2929 11.7071L13 6.41421V20C13 20.5523 12.5523 21 12 21C11.4477 21 11 20.5523 11 20V6.41421L5.70711 11.7071C5.31658 12.0976 4.68342 12.0976 4.29289 11.7071C3.90237 11.3166 3.90237 10.6834 4.29289 10.2929L11.2929 3.29289C11.4804 3.10536 11.7348 3 12 3Z" fill="#000000"/>
                       </svg>
@@ -405,6 +407,7 @@
 
 <script>
   import Authorization from './components/Authorization.vue';
+  import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
   export default{
     components:
@@ -413,11 +416,14 @@
     },
     data()
     {
-      
+      return {
+        inputField: '',
+        isResponding: false,
+      }
     },
     mounted()
     {
-      fetch('http://localhost:8080/chat/9476-affbcd-479426-fbf').then((response) => {
+      /*fetch('http://localhost:8080/chat/9476-affbcd-479426-fbf').then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`)
           }
@@ -440,11 +446,45 @@
             "</div>";
               }
             }
-          }).catch((error) => console.log('Fetching data', error))
+          }).catch((error) => console.log('Fetching data', error))*/
     },
     methods:
     {
-
+        inputProcessing()
+        {
+          if(this.inputField.length != 0)
+            {
+              document.getElementById('enterButton').style.opacity = 1;
+            }
+            else
+            {
+              document.getElementById('enterButton').style.opacity = 0.5;
+            }
+        },
+        requestAnswer()
+        {
+          if(document.getElementById('enterButton').style.opacity != 1)
+            return;
+          this.isResponding = true;
+          document.getElementById('enterButton').style.opacity = 0.5;
+          this.$refs.messages.innerHTML += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; margin-top: 10px;">` +
+                '<div style="max-width: 60%; height: fit-content; border-radius: 2vh; background-color: rgba(35, 46, 46, 0.05); padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">' + "<p>" + marked.parse(this.inputField) + "</p>" + "</div>" +
+                "</div>";
+          fetch('http://localhost:5000/?message='+this.inputField).then(response => 
+            response.text()
+          ).then((data)=> {
+            this.$refs.messages.innerHTML += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; margin-top: 10px;">` +
+            '<div style="max-width: 100%; height: fit-content; border-radius: 2vh; padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">' + "<p>" + marked.parse(data)  + "</p>" + "</div>" +
+            "</div>";
+            document.getElementById('enterButton').style.opacity = 0.5;
+            this.isResponding = false;
+          })
+          this.inputField = null
+        }
+    },
+    watch:
+    {
+      
     }
   }
 </script>
