@@ -111,24 +111,25 @@
     <div class="canvas">
       <div class="chat">
         <div style="width: 100%; height: 8%; border-bottom: solid; border-color: #354445; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
-          <div class="notification"> 
+          <div v-if="false" class="notification"> 
             <div style="width: 80%; height: 50%; margin-top: 2px; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
             </div>
           </div>
         </div>
         <div style="width: 100%; height: 92%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-          <div class="messages">
-              <div style="width: 100%; height: 30%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end;">
-                <div style="width: 50%; height: 70%; border-radius: 2vh; background-color: #D9D9D9;">
-
+          <div ref="messages" class="messages" style="overflow-y: scroll;">
+              <div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; margin-top: 10px;">
+                <div style="max-width: 60%; height: fit-content; border-radius: 2vh; background-color: rgba(35, 46, 46, 0.05); padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">
+                  <p style="font-size: 100%; font-family: 'Archivo', sans-serif;">Jingga, Hello!</p>
                 </div>
               </div>
-              <div style="width: 100%; height: 30%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end;">
-                <div style="width: 50%; height: 70%; border-radius: 2vh; background-color: #D9D9D9;">
-
+              <div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; margin-top: 10px;">
+                <div style="max-width: 100%; height: fit-content; border-radius: 2vh; padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">
+                  <p style="font-size: 100%; font-family: 'Archivo', sans-serif;">Hello, Joshua!</p>
+                  <p style="font-size: 100%; font-family: 'Archivo', sans-serif;">How can I help you?</p>
+                  <p style="font-size: 100%; font-family: 'Archivo', sans-serif;">Quantum physics is the fundamental theory describing the nature of matter and energy at the atomic and subatomic level, where the familiar rules of classical physics break down. It reveals a bizarre reality where particles can exist in multiple places at once (superposition), become instantaneously linked regardless of distance (entanglement), and act as both waves and particles simultaneously, dictating how everything from light bulbs to lasers, and even our own bodies, ultimately function.</p>
                 </div>
               </div>
-              
           </div>
           <div class="message-input">
             <div style="width: 98%; height: 80%; border-radius: 1vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: white; margin-top: 1vh">
@@ -136,7 +137,7 @@
                   <p style="font-size: 17px; font-family: 'Archivo', sans-serif; color: rgba(35, 46, 46, 0.5)">Processing...</p>
                 </div>
                 <div style="width: 100%; height: 40%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end;">
-                  <div style="width: 6vh; height: 6vh; border-radius: 10px; background-color: #FF7132; margin-right: 10px; display: flex; justify-content: center; align-items: center;">
+                  <div style="width: 6vh; height: 6vh; border-radius: 10px; background-color: #FF7132; margin-right: 10px; display: flex; justify-content: center; align-items: center; opacity: 0.7">
                     <div v-if="true" class="circle">
 
                     </div>
@@ -147,6 +148,9 @@
                     </div>
                   </div>
                 </div>
+            </div>
+            <div class="text-max">
+              <p style="font-size: 100%; font-family: 'Archivo', sans-serif; color: #89A7A6">This is a beta version of LLM chat</p>
             </div>
           </div>
         </div>
@@ -350,6 +354,16 @@
   border-top-color: transparent;
 }
 
+.text-max
+{
+  width: 100%; 
+  height: 20%; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;
+}
+
 @keyframes effect {
             0% {
                 transform: rotate(0deg);
@@ -371,6 +385,9 @@
   {
     border-top-left-radius: 0; 
     border-top-right-radius: 0; 
+  }
+  .text-max{
+    display: none;
   }
   .panel{
     width: 10vh;
@@ -420,14 +437,14 @@
       {
         for(let i = 0; i < alice_messages.length; i++)
         {
-          this.$refs.messages.innerHTML += "<div style=\"display: flex; width: 100%; height: 100px; align-items: center; justify-content: flex-end;\">" +
-          '<div style="display: flex; min-width: 100px; height: 50px; justify-content: center; align-items: center; border-radius: 10px; background: #F2F3F4; bottom: 100px; box-shadow: 0px 0px 10px gray; margin-right: 10px; margin-left: 10px; margin-top: 10px; margin-bottom: 10px;">' + "<p>" + alice_messages[i] + "</p>" + "</div>" +
+          this.$refs.messages.innerHTML += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; margin-top: 10px;">` +
+          '<div style="max-width: 60%; height: fit-content; border-radius: 2vh; background-color: rgba(35, 46, 46, 0.05); padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">' + "<p>" + alice_messages[i] + "</p>" + "</div>" +
           "</div>";
         }        
         for(let i = 0; i < bob_messages.length; i++)
         {
-          this.$refs.messages.innerHTML += "<div style=\"display: flex; width: 100%; height: 100px; align-items: center; justify-content: flex-start;\">" +
-          '<div style="display: flex; min-width: 100px; height: 50px; justify-content: center; align-items: center; border-radius: 10px; background: #F2F3F4; bottom: 100px; box-shadow: 0px 0px 10px gray; margin-right: 10px; margin-left: 10px; margin-top: 10px; margin-bottom: 10px;">' + "<p>" + bob_messages[i] + "</p>" + "</div>" +
+          this.$refs.messages.innerHTML += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; margin-top: 10px;">` +
+          '<div style="max-width: 100%; height: fit-content; border-radius: 2vh; padding-top: 5px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px;  display: inline; flex-direction: row; justify-content: flex-start; align-items: flex-start;">' + "<p>" + bob_messages[i] + "</p>" + "</div>" +
           "</div>";
         }
       }
