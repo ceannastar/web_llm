@@ -35,4 +35,5 @@ coverage
 # Vitest
 __screenshots__/
 
-node_modules/*
+backend/node_modules/*
+frontend/node_modules/*
